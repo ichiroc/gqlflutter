@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gqlflutter/graphql/all_pokemon.data.gql.dart';
+import 'package:gqlflutter/graphql/all_pokemon.req.gql.dart';
+import 'package:gql_http_link/gql_http_link.dart';
+import 'package:ferry/ferry.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,6 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
+    print('hello');
+    getAllPokemons();
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -59,6 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+
+  void getAllPokemons() async {
+    final link = HttpLink('https://graphql-pokemon2.vercel.app');
+
+    final client = Client(link: link);
+    final request = GAllPokemonReq(
+      (b) =>
+      b..vars.first = 10
+    );
+    client.request(request).listen((event) {
+        final pokemons = event.data?.pokemons;
+        if(pokemons != null) {
+          pokemons.forEach((pokemon) {
+              print(pokemon.name);
+          });
+        }
+    });
+    print('hoge');
   }
 
   @override
