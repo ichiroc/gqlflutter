@@ -73,8 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
         client: client,
         operationRequest: GAllPokemonReq((b) => b..vars.first = 152),
         builder: (BuildContext context,
-          OperationResponse<GAllPokemonData, GAllPokemonVars>? response,
-          Object? error) {
+            OperationResponse<GAllPokemonData, GAllPokemonVars>? response,
+            Object? error) {
           if (response == null || response.loading) {
             return const Center(child: CircularProgressIndicator());
           }
@@ -82,15 +82,15 @@ class _MyHomePageState extends State<MyHomePage> {
           final pokemons = response.data?.pokemons ?? BuiltList();
 
           return ListView.builder(
-            itemCount: pokemons.length,
-            itemBuilder: (context, index) {
-              final pokemon = pokemons[index];
+              itemCount: pokemons.length,
+              itemBuilder: (context, index) {
+                final pokemon = pokemons[index];
 
-              return Card(
-                child: Row(children: <Widget>[
+                return Card(
+                  child: Row(children: <Widget>[
                     SizedBox(
                       child: Image.network(
-                        pokemon.image ?? 'https://placehold.jp/150x150.png'),
+                          pokemon.image ?? 'https://placehold.jp/150x150.png'),
                       width: 100,
                     ),
                     Padding(
@@ -106,13 +106,15 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       ),
                     )
-                ]),
-              );
-          });
+                  ]),
+                );
+              });
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () { getAllPokemons(); },
+        onPressed: () {
+          getAllPokemons();
+        },
         tooltip: 'Pokemon',
         child: const Text('P'),
       ),
