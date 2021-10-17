@@ -1,8 +1,13 @@
+import 'package:built_collection/built_collection.dart';
+import 'package:ferry/ferry.dart';
+import 'package:ferry_flutter/ferry_flutter.dart';
 import 'package:flutter/material.dart';
+
+import 'package:gql_http_link/gql_http_link.dart';
 import 'package:gqlflutter/graphql/all_pokemon.data.gql.dart';
 import 'package:gqlflutter/graphql/all_pokemon.req.gql.dart';
-import 'package:gql_http_link/gql_http_link.dart';
-import 'package:ferry/ferry.dart';
+import 'package:gqlflutter/graphql/all_pokemon.var.gql.dart';
+
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        primaryColor: Colors.white,
         // This is the theme of your application.
         //
         // Try running your application with "flutter run". You'll see the
@@ -26,9 +32,8 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Poket monsters'),
     );
   }
 }
@@ -66,11 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
   void getAllPokemons() async {
-    final link = HttpLink('https://graphql-pokemon2.vercel.app');
-
-    final client = Client(link: link);
     final request = GAllPokemonReq(
       (b) =>
       b..vars.first = 10
@@ -83,6 +84,17 @@ class _MyHomePageState extends State<MyHomePage> {
           });
         }
     });
+  }
+
+  Client? _client;
+
+  Client get client {
+    if(_client == null) {
+      final link = HttpLink('https://graphql-pokemon2.vercel.app');
+      return _client = Client(link: link);
+    } else {
+      return _client!;          // NOTE: ! 消せないの?
+    }
   }
 
   @override
@@ -99,32 +111,29 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
+      body: Operation(
+        client: client,
+        operationRequest: GAllPokemonReq((b) => b..vars.first = 50),
+        builder: (BuildContext context, OperationResponse<GAllPokemonData, GAllPokemonVars>? response, Object? error) {
+          if(response == null || response.loading) return const Center(child: CircularProgressIndicator());
+
+          final pokemons = response.data?.pokemons ?? BuiltList();
+
+          return ListView.builder(
+            itemBuilder: (context, index) {
+              final pokemon = pokemons[index];
+              final pokemonName = pokemon.name ?? 'none';
+
+              return Card(
+                child: Column(
+                  children: <Widget> [
+                    Text(pokemonName)
+                  ]
+                ),
+              );
+            }
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
