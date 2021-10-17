@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Pocket Monsters',
       theme: ThemeData(
         primaryColor: Colors.white,
       ),
@@ -35,15 +35,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    getAllPokemons();
-    setState(() {
-      _counter++;
-    });
-  }
-
   void getAllPokemons() async {
     final request = GAllPokemonReq((b) => b..vars.first = 10);
     client.request(request).listen((event) {
@@ -98,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 100,
                     ),
                     Padding(
-                       padding: const EdgeInsets.only(left: 20),
+                      padding: const EdgeInsets.only(left: 20),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -114,11 +105,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               });
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
