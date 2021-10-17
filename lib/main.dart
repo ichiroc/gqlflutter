@@ -20,9 +20,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pocket Monsters',
       theme: ThemeData(
-        primaryColor: Colors.white,
+        primarySwatch: Colors.blue,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+        ),
       ),
-      home: const MyHomePage(title: 'Poket monsters'),
+      darkTheme: ThemeData.dark(),
+      home: const MyHomePage(title: 'Poket Monsters'),
     );
   }
 }
