@@ -123,7 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
               itemCount: pokemons.length,
               itemBuilder: (context, index) {
                 final pokemon = pokemons[index];
-                final pokemonName = pokemon.name ?? 'none';
 
                 return Card(
                   child: Row(children: <Widget>[
@@ -132,7 +131,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           pokemon.image ?? 'https://placehold.jp/150x150.png'),
                       width: 100,
                     ),
-                    Text(pokemonName)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Name: ${pokemon.name ?? '[unknown]'}'
+                        ),
+                        Text('MAX HP: ${pokemon.maxHP}',
+                          textAlign: TextAlign.left,
+                        ),
+                      ],
+                    )
                   ]),
                 );
               });
