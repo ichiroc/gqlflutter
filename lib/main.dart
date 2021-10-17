@@ -8,7 +8,6 @@ import 'package:gqlflutter/graphql/all_pokemon.data.gql.dart';
 import 'package:gqlflutter/graphql/all_pokemon.req.gql.dart';
 import 'package:gqlflutter/graphql/all_pokemon.var.gql.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
@@ -72,28 +71,25 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void getAllPokemons() async {
-    final request = GAllPokemonReq(
-      (b) =>
-      b..vars.first = 10
-    );
+    final request = GAllPokemonReq((b) => b..vars.first = 10);
     client.request(request).listen((event) {
-        final pokemons = event.data?.pokemons;
-        if(pokemons != null) {
-          pokemons.forEach((pokemon) {
-              print(pokemon.name);
-          });
-        }
+      final pokemons = event.data?.pokemons;
+      if (pokemons != null) {
+        pokemons.forEach((pokemon) {
+          print(pokemon.name);
+        });
+      }
     });
   }
 
   Client? _client;
 
   Client get client {
-    if(_client == null) {
+    if (_client == null) {
       final link = HttpLink('https://graphql-pokemon2.vercel.app');
       return _client = Client(link: link);
     } else {
-      return _client!;          // NOTE: ! 消せないの?
+      return _client!; // NOTE: ! 消せないの?
     }
   }
 
@@ -114,25 +110,32 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Operation(
         client: client,
         operationRequest: GAllPokemonReq((b) => b..vars.first = 50),
-        builder: (BuildContext context, OperationResponse<GAllPokemonData, GAllPokemonVars>? response, Object? error) {
-          if(response == null || response.loading) return const Center(child: CircularProgressIndicator());
+        builder: (BuildContext context,
+            OperationResponse<GAllPokemonData, GAllPokemonVars>? response,
+            Object? error) {
+          if (response == null || response.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
           final pokemons = response.data?.pokemons ?? BuiltList();
 
           return ListView.builder(
-            itemBuilder: (context, index) {
-              final pokemon = pokemons[index];
-              final pokemonName = pokemon.name ?? 'none';
+              itemCount: pokemons.length,
+              itemBuilder: (context, index) {
+                final pokemon = pokemons[index];
+                final pokemonName = pokemon.name ?? 'none';
 
-              return Card(
-                child: Column(
-                  children: <Widget> [
+                return Card(
+                  child: Row(children: <Widget>[
+                    SizedBox(
+                      child: Image.network(
+                          pokemon.image ?? 'https://placehold.jp/150x150.png'),
+                      width: 100,
+                    ),
                     Text(pokemonName)
-                  ]
-                ),
-              );
-            }
-          );
+                  ]),
+                );
+              });
         },
       ),
       floatingActionButton: FloatingActionButton(
