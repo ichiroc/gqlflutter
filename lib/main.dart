@@ -131,16 +131,18 @@ class _MyHomePageState extends State<MyHomePage> {
                           pokemon.image ?? 'https://placehold.jp/150x150.png'),
                       width: 100,
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Name: ${pokemon.name ?? '[unknown]'}'
-                        ),
-                        Text('MAX HP: ${pokemon.maxHP}',
-                          textAlign: TextAlign.left,
-                        ),
-                      ],
+                    Padding(
+                       padding: const EdgeInsets.only(left: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Name: ${pokemon.name ?? '[unknown]'}'),
+                          Text(
+                            'MAX HP: ${pokemon.maxHP}',
+                            textAlign: TextAlign.left,
+                          ),
+                        ],
+                      ),
                     )
                   ]),
                 );
